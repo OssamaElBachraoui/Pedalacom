@@ -32,6 +32,7 @@ namespace Pedalacom.Controllers
                 .Include(emp => emp.CustomerAddresses)
                 .Include(emp => emp.SalesOrderHeaders)
                 .ToListAsync();
+             
         }
 
         // GET: api/Customers/5
