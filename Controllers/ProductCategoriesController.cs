@@ -43,7 +43,7 @@ namespace Pedalacom.Controllers
           }
             var productCategory = await _context.ProductCategories
                 
-                .Include(prod => prod.InverseParentProductCategory.Select(p => (Products)))
+                .Include(prod => prod.InverseParentProductCategory.Select(p => (prod.Products)))
                 .Include(prod => prod.Products)
                 .FirstOrDefaultAsync(prod => prod.ProductCategoryId == id);
 
