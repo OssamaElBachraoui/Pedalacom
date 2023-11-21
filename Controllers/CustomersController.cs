@@ -31,8 +31,7 @@ namespace Pedalacom.Controllers
             return await _context.Customers
                 .Include(emp => emp.CustomerAddresses)
                 .Include(emp => emp.SalesOrderHeaders)
-                .ToListAsync();
-             
+                .ToListAsync();   
         }
 
         // GET: api/Customers/5

@@ -37,13 +37,16 @@ namespace Pedalacom.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductCategory>> GetProductCategory(int id)
         {
-          if (_context.ProductCategories == null)
-          {
-              return NotFound();
-          }
+            if (_context.ProductCategories == null)
+            {
+                return NotFound();
+            }
+
             var productCategory = await _context.ProductCategories
+                .Include(prod => prod.Products)
+                .Include(prod => prod.InverseParentProductCategory)
                 
-                .Include(prod => prod.InverseParentProductCategory.Select(p => (prod.Products)))
+                .Include(prod => prod.InverseParentProductCategory.Select(p => (Products)))
                 .Include(prod => prod.Products)
                 .FirstOrDefaultAsync(prod => prod.ProductCategoryId == id);
 
@@ -54,6 +57,8 @@ namespace Pedalacom.Controllers
 
             return productCategory;
         }
+
+
 
         // PUT: api/ProductCategories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
