@@ -16,6 +16,7 @@ public partial class Product
     /// <summary>
     /// Name of the product.
     /// </summary>
+    
     public string Name { get; set; } = null!;
 
     /// <summary>

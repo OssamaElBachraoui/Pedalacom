@@ -29,6 +29,7 @@ namespace Pedalacom.Controllers
               return NotFound();
           }
             return await _context.ProductModelProductDescriptions
+                .Include(prd => prd.ProductModel.Products)
                 .Include(prd => prd.ProductModel)
                 .Include(prd => prd.ProductDescription)
                 .ToListAsync();
