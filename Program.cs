@@ -23,6 +23,16 @@ namespace Pedalacom
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+
+            builder.Services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", builder => builder
+                .AllowAnyMethod()
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                );
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -36,7 +46,7 @@ namespace Pedalacom
 
             app.UseAuthorization();
 
-
+            app.UseCors("CorsPolicy");
             app.MapControllers();
 
             app.Run();
