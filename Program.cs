@@ -1,5 +1,8 @@
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Pedalacom.BLogic.Authentication;
 using Pedalacom.Models;
 using System.Text.Json.Serialization;
 
@@ -23,6 +26,13 @@ namespace Pedalacom
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //login autorizzato
+            builder.Services.AddAuthentication()
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+            builder.Services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("BasicAuthentication", new AuthorizationPolicyBuilder("BasicAuthentication").RequireAuthenticatedUser().Build());
+            });
 
             builder.Services.AddCors(opt =>
             {
@@ -44,6 +54,8 @@ namespace Pedalacom
 
             app.UseHttpsRedirection();
 
+            //autenticazione
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseCors("CorsPolicy");
