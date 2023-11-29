@@ -16,7 +16,7 @@ public class GeneralProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GeneralProduct>>> GetProductProva()
+    public async Task<ActionResult<IEnumerable<GeneralProduct>>> GetProducts()
     {
         if (_context == null)
         {
@@ -35,6 +35,27 @@ public class GeneralProductsController : ControllerBase
 
         return Ok(products); 
     }
-}
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GeneralProduct>> GetProduct(int id)
+        {
+            if (_context.Products == null)
+            {
+                return NotFound();
+            }
+            var product = await _context.GeneralProducts
+                .FromSqlRaw("SELECT * FROM View_prodotti")
+                .Where(prod => prod.ProductID == id)
+                .FirstOrDefaultAsync(prod => prod.ProductID == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return product;
+        }
+
+    }
 
 }
