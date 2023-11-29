@@ -37,9 +37,9 @@ public class GeneralProductsController : ControllerBase
     }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<GeneralProduct>> GetProduct(int id)
+        public async Task<ActionResult<GeneralProduct>> GetProductById(int id)
         {
-            if (_context.Products == null)
+            if (_context.GeneralProducts == null)
             {
                 return NotFound();
             }
@@ -55,6 +55,8 @@ public class GeneralProductsController : ControllerBase
 
             return product;
         }
+
+        
 
     }
 

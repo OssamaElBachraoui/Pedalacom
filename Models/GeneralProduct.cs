@@ -13,6 +13,8 @@ namespace Pedalacom.Models
         public decimal? Weight { get; set; }
         public int ProductCategoryID { get; set; }
         public int ParentProductCategoryID { get; set; }
+
+        public int ProductModelId {  get; set; }
         public string? Category { get; set; }
         public string? Model { get; set; }
         public int ProductDescriptionID { get; set; }
