@@ -6,26 +6,26 @@ namespace Pedalacom.Controllers
 {
     [ApiController]
 [Route("[controller]")]
-public class ProvaController : ControllerBase
+public class GeneralProductsController : ControllerBase
 {
     private readonly AdventureWorksLt2019Context _context;
 
-    public ProvaController(AdventureWorksLt2019Context context)
+    public GeneralProductsController(AdventureWorksLt2019Context context)
     {
         _context = context;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductProva>>> GetProductProva()
+    public async Task<ActionResult<IEnumerable<GeneralProduct>>> GetProductProva()
     {
         if (_context == null)
         {
             return NotFound();
         }
 
-        var products = await _context.Products
-                .FromSqlRaw("SELECT * FROM ViewProdotti")
-            .OrderBy(ob => ob.ProductId)
+        var products = await _context.GeneralProducts
+                .FromSqlRaw("SELECT * FROM View_prodotti")
+            .OrderBy(ob => ob.ProductID)
             .ToListAsync();
 
         if (products == null || products.Count == 0)
