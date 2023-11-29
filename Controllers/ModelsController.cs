@@ -15,24 +15,25 @@ namespace Pedalacom.Controllers
             _context = context;
         }
 
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<GeneralProduct>> GetModelById(int id)
+        public async Task<ActionResult<Model>> GetModelFromCategory(int id)
         {
-            if (_context.GeneralProducts == null)
+            if (_context.Models == null)
             {
                 return NotFound();
             }
-            var product = await _context.GeneralProducts
-                .FromSqlRaw("SELECT * FROM View_prodotti")
-                .Where(model => model.ProductModelId== id)
-                .FirstOrDefaultAsync(model => model.ProductModelId == id);
+            var product = await _context.Models
+                .FromSqlRaw("select distinct pm.ProductModelID,pm.Name,pc.ProductCategoryID,p.ListPrice from SalesLT.ProductModel pm join SalesLT.Product p on pm.ProductModelID=p.ProductModelID\r\njoin SalesLT.ProductCategory pc on pc.ProductCategoryID=p.ProductCategoryID")
+                .Where(model => model.ProductCategoryID == id)
+                .FirstOrDefaultAsync(model => model.ProductCategoryID == id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            return product;
+            return Ok(product);
         }
     }
 }
