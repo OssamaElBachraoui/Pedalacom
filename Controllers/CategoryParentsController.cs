@@ -16,7 +16,7 @@ namespace Pedalacom.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<GeneralProduct>> GetCategory()
+        public async Task<ActionResult<DetailedProduct>> GetCategory()
         {
             if (_context.CategoriesParent == null)
             {

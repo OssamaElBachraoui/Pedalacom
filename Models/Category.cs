@@ -11,6 +11,6 @@ namespace Pedalacom.Models
         [MaxLength(50)]
         public string Name { get; set; }
 
-        public List<Model> models = new List<Model>();
+        public List<PreviewProduct> models = new List<PreviewProduct>();
     }
 }
