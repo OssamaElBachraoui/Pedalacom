@@ -17,23 +17,25 @@ namespace Pedalacom.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Model>> GetModelFromCategory(int id)
+        public async Task<ActionResult<List<Model>>> GetModelsFromCategory(int id)
         {
             if (_context.Models == null)
             {
                 return NotFound();
             }
-            var product = await _context.Models
+
+            var products = await _context.Models
                 .FromSqlRaw("select distinct pm.ProductModelID,pm.Name,pc.ProductCategoryID,p.ListPrice from SalesLT.ProductModel pm join SalesLT.Product p on pm.ProductModelID=p.ProductModelID\r\njoin SalesLT.ProductCategory pc on pc.ProductCategoryID=p.ProductCategoryID")
                 .Where(model => model.ProductCategoryID == id)
-                .FirstOrDefaultAsync(model => model.ProductCategoryID == id);
+                .ToListAsync();
 
-            if (product == null)
+            if (products == null || !products.Any())
             {
                 return NotFound();
             }
 
-            return Ok(product);
+            return Ok(products);
         }
+
     }
 }
