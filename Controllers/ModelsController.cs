@@ -25,7 +25,7 @@ namespace Pedalacom.Controllers
             }
 
             var products = await _context.Models
-                .FromSqlRaw("select distinct pm.ProductModelID,pm.Name,pc.ProductCategoryID,p.ListPrice from SalesLT.ProductModel pm join SalesLT.Product p on pm.ProductModelID=p.ProductModelID\r\njoin SalesLT.ProductCategory pc on pc.ProductCategoryID=p.ProductCategoryID")
+                .FromSqlRaw("SELECT DISTINCT pm.ProductModelID, pm.Name, pc.ProductCategoryID\r\nFROM SalesLT.ProductModel pm\r\nJOIN SalesLT.Product p ON pm.ProductModelID = p.ProductModelID\r\nJOIN SalesLT.ProductCategory pc ON pc.ProductCategoryID = p.ProductCategoryID\r\n")
                 .Where(model => model.ProductCategoryID == id)
                 .ToListAsync();
 

@@ -8,7 +8,7 @@ namespace Pedalacom.Models
         public int ProductModelId { get; set; }
         public string Name { get; set; }
         public int ProductCategoryID { get; set; }
-        public decimal ListPrice { get; set; }
+       // public decimal ListPrice { get; set; }
        
     }
 }
