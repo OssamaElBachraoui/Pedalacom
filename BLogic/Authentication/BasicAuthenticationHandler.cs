@@ -6,16 +6,20 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using System.Text;
+using Pedalacom.Models;
 
 namespace Pedalacom.BLogic.Authentication
 {
     public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
+        private readonly AdventureWorksLt2019Context _context;
+
         public BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
-            ISystemClock clock) : base(options, logger, encoder, clock)
+            ISystemClock clock, AdventureWorksLt2019Context context) : base(options, logger, encoder, clock)
         {
+            _context = context;
         }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -50,6 +54,8 @@ namespace Pedalacom.BLogic.Authentication
                 var username = authorizationSplit[0];
 
                 // TO DO: CHECK USER/PSW IN DB
+
+
                 if ((username != "test") && (authorizationSplit[1] != "test"))
                 {
                     throw new InvalidOperationException("AUtorizzazione non valida : Impossibile accedere al servizio");
