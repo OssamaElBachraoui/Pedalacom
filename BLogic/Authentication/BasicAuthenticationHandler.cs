@@ -7,6 +7,8 @@ using System.Text.Encodings.Web;
 using System.Text.RegularExpressions;
 using System.Text;
 using Pedalacom.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace Pedalacom.BLogic.Authentication
 {
@@ -22,7 +24,7 @@ namespace Pedalacom.BLogic.Authentication
             _context = context;
         }
 
-        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+        protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             try
             {
@@ -39,7 +41,7 @@ namespace Pedalacom.BLogic.Authentication
 
                 if (!authorizationRegEx.IsMatch(authorizationHeader))
                 {
-                    throw new InvalidOperationException("AUtorizzazione non valida : Impossibile accedere al servizio");
+                    throw new InvalidOperationException("Autorizzazione non valida : Impossibile accedere al servizio");
                 }
 
                 var authorizationBase64 = Encoding.UTF8.GetString(Convert.FromBase64String(authorizationRegEx.Replace(authorizationHeader, "$1")));
@@ -48,29 +50,43 @@ namespace Pedalacom.BLogic.Authentication
 
                 if (authorizationSplit.Length != 2)
                 {
-                    throw new InvalidOperationException("AUtorizzazione non valida : Impossibile accedere al servizio");
+                    throw new InvalidOperationException("Autorizzazione non valida : Impossibile accedere al servizio");
                 }
 
                 var username = authorizationSplit[0];
+                var password = authorizationSplit[1];
 
-                // TO DO: CHECK USER/PSW IN DB
+                // Verifica nel database
+                var user = await _context.Customers.FirstOrDefaultAsync(c => c.EmailAddress == username);
 
-
-                if ((username != "test") && (authorizationSplit[1] != "test"))
+                if (user == null || !VerifyPassword(user.PasswordHash, user.PasswordSalt, password))
                 {
-                    throw new InvalidOperationException("AUtorizzazione non valida : Impossibile accedere al servizio");
+                    throw new InvalidOperationException("Autorizzazione non valida : Impossibile accedere al servizio");
                 }
 
                 var authenticaionUser = new AuthenticationUser(username, "BasicAuthentication", true);
 
                 var claims = new ClaimsPrincipal(new ClaimsIdentity(authenticaionUser));
 
-                return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(claims, "BasicAuthentication")));
+                return AuthenticateResult.Success(new AuthenticationTicket(claims, "BasicAuthentication"));
+                //  return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(claims, "BasicAuthentication")));
             }
             catch (Exception ex)
             {
-                return Task.FromResult(AuthenticateResult.Fail($"An error occurred: {ex.Message}"));
+                return AuthenticateResult.Fail($"An error occurred: {ex.Message}");
+                // return Task.FromResult(AuthenticateResult.Fail($"An error occurred: {ex.Message}"));
             }
         }
+
+        private bool VerifyPassword(string hashedPassword, string salt, string password)
+        {
+            // Concatenazione della password con il sale
+            string passwordWithSalt = $"{password}{salt}";
+
+            // Verifica utilizzando BCrypt
+            return BCrypt.Net.BCrypt.Verify(passwordWithSalt, hashedPassword);
+        }
+
     }
+
 }
