@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Pedalacom.BLogic.Authentication;
 using Pedalacom.Models;
 
 
@@ -12,7 +13,7 @@ namespace Pedalacom.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[BasicAutorizationAttributes]
+    
     public class CustomersController : ControllerBase
     {
         private readonly AdventureWorksLt2019Context _context;
@@ -97,7 +98,7 @@ namespace Pedalacom.Controllers
             //password hash
             Encryption en=new Encryption();
             KeyValuePair<string, string> keyValuePair;
-            keyValuePair = en.EncrypSaltString("pippo");
+            keyValuePair = en.EncrypSaltString("test");
             customer.PasswordHash = keyValuePair.Key;
             customer.PasswordSalt = keyValuePair.Value;
 

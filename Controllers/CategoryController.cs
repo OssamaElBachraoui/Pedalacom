@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Pedalacom.BLogic.Authentication;
 using Pedalacom.Models;
 
 namespace Pedalacom.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [BasicAutorizationAttributes]
     public class CategoryController : ControllerBase
     {
         private readonly AdventureWorksLt2019Context _context;

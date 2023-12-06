@@ -9,6 +9,7 @@ using System.Text;
 using Pedalacom.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis.Scripting;
+using System.Security.Cryptography;
 
 namespace Pedalacom.BLogic.Authentication
 {
@@ -57,9 +58,9 @@ namespace Pedalacom.BLogic.Authentication
                 var password = authorizationSplit[1];
 
                 // Verifica nel database
-                var user = await _context.Customers.FirstOrDefaultAsync(c => c.EmailAddress == username);
+                var user = await _context.Customers.FirstOrDefaultAsync(c => c.EmailAddress.ToLower() == username.ToLower());
 
-                if (user == null || !VerifyPassword(user.PasswordHash, user.PasswordSalt, password))
+                if (user == null || VerifyPassword(user.PasswordHash, user.PasswordSalt, password))
                 {
                     throw new InvalidOperationException("Autorizzazione non valida : Impossibile accedere al servizio");
                 }
@@ -78,13 +79,37 @@ namespace Pedalacom.BLogic.Authentication
             }
         }
 
+        //private bool VerifyPassword(string hashedPassword, string salt, string password)
+        //{
+        //    // Concatenazione della password con il sale
+        //    string passwordWithSalt = $"{password}{salt}";
+
+        //    // Verifica utilizzando BCrypt
+        //    return BCrypt.Net.BCrypt.Verify(passwordWithSalt, hashedPassword);
+        //}
+
         private bool VerifyPassword(string hashedPassword, string salt, string password)
         {
-            // Concatenazione della password con il sale
-            string passwordWithSalt = $"{password}{salt}";
+            // Calcolare l'hash della password fornita con il salt
+            string hashedInputPassword = HashPassword(password, salt);
 
-            // Verifica utilizzando BCrypt
-            return BCrypt.Net.BCrypt.Verify(passwordWithSalt, hashedPassword);
+            // Verifica se l'hash calcolato corrisponde all'hash memorizzato
+            return string.Equals(hashedPassword, hashedInputPassword);
+        }
+
+        private string HashPassword(string password, string salt)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                // Concatenazione della password con il salt
+                string passwordWithSalt = $"{password}{salt}";
+
+                // Calcolo dell'hash SHA-256
+                byte[] hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(passwordWithSalt));
+
+                // Convertire i byte in una rappresentazione stringa esadecimale
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
         }
 
     }
