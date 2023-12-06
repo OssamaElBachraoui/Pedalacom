@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Pedalacom.BLogic.Authentication;
 using Pedalacom.Models;
+
 
 namespace Pedalacom.Controllers
 {
@@ -94,6 +94,18 @@ namespace Pedalacom.Controllers
           {
               return Problem("Entity set 'AdventureWorksLt2019Context.Customers'  is null.");
           }
+            //password hash
+            Encryption en=new Encryption();
+            KeyValuePair<string, string> keyValuePair;
+            keyValuePair = en.EncrypSaltString("pippo");
+            customer.PasswordHash = keyValuePair.Key;
+            customer.PasswordSalt = keyValuePair.Value;
+
+            //rowguid
+            Guid nuovoGuid = Guid.NewGuid();
+            customer.Rowguid= nuovoGuid;
+            
+
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
