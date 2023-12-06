@@ -63,7 +63,7 @@ namespace Pedalacom.BLogic.Authentication
                 // Verifica nel database
                 var user = await _context.Customers.FirstOrDefaultAsync(c => c.EmailAddress.ToLower() == username.ToLower());
 
-                if (user == null || VerifyPassword(user.PasswordHash, user.PasswordSalt, password))
+                if (user == null || !VerifyPassword(user.PasswordHash, user.PasswordSalt, password))
                 {
                     throw new InvalidOperationException("Autorizzazione non valida : Impossibile accedere al servizio");
                 }
