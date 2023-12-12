@@ -9,7 +9,7 @@ namespace Pedalacom.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [BasicAutorizationAttributes]
+    //[BasicAutorizationAttributes]
     public class CategoryController : ControllerBase
     {
         private readonly AdventureWorksLt2019Context _context;
