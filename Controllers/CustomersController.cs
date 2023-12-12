@@ -89,7 +89,7 @@ namespace Pedalacom.Controllers
         // POST: api/Customers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<ActionResult<Customer>> PostCustomer(Customer customer,string password)
         {
           if (_context.Customers == null)
           {
@@ -98,7 +98,7 @@ namespace Pedalacom.Controllers
             //password hash
             Encryption en=new Encryption();
             KeyValuePair<string, string> keyValuePair;
-            keyValuePair = en.EncrypSaltString("test");
+            keyValuePair = en.EncrypSaltString(password);
             customer.PasswordHash = keyValuePair.Key;
             customer.PasswordSalt = keyValuePair.Value;
 
