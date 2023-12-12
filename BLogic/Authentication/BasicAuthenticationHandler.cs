@@ -14,6 +14,7 @@ using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using System.Xml.Serialization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Pedalacom.BLogic.Encryption;
+using Pedalacom.Controllers;
 
 namespace Pedalacom.BLogic.Authentication
 {
@@ -60,6 +61,7 @@ namespace Pedalacom.BLogic.Authentication
 
                 var username = authorizationSplit[0];
                 var password = authorizationSplit[1];
+
 
                 // Verifica nel database
                 var user = await _context.Customers.FirstOrDefaultAsync(c => c.EmailAddress.ToLower() == username.ToLower());
