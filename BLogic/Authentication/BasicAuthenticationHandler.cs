@@ -13,6 +13,7 @@ using System.Security.Cryptography;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using System.Xml.Serialization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Pedalacom.BLogic.Encryption;
 
 namespace Pedalacom.BLogic.Authentication
 {
@@ -63,7 +64,9 @@ namespace Pedalacom.BLogic.Authentication
                 // Verifica nel database
                 var user = await _context.Customers.FirstOrDefaultAsync(c => c.EmailAddress.ToLower() == username.ToLower());
 
-                if (user == null || !VerifyPassword(user.PasswordHash, user.PasswordSalt, password))
+                DecryptSalt decryptSalt = new();
+
+                if (!decryptSalt.DecryptSaltCredential(user,password))
                 {
                     throw new InvalidOperationException("Autorizzazione non valida : Impossibile accedere al servizio");
                 }
@@ -115,54 +118,7 @@ namespace Pedalacom.BLogic.Authentication
             }
         }
 
-        //internal bool DecryptSaltCredential(string Username, string Password)
-        //{
-        //    bool result = false;
-        //    byte[] byteSalt = new byte[16];
-        //    string encryptedResult = string.Empty;
-        //    string encryptedSalt = string.Empty;
-        //    XmlSerializer serializer = new XmlSerializer(typeof(List<CredenzialiSale>));
-        //    string pwdHash = string.Empty;
-
-        //    try
-        //    {
-        //        using (StreamReader reader = new StreamReader(@"E:\Betacom\Credenziali.xml"))
-        //        {
-        //            credenzialiSales = (List<CredenzialiSale>)serializer.Deserialize(reader);
-        //        }
-
-        //        var foundCredenziali = credenzialiSales.Where(c => c.Username == Username).
-        //                               Select(c => new { c.Username, c.PasswordHash, c.Salt }).FirstOrDefault();
-
-        //        byteSalt = Convert.FromBase64String(foundCredenziali.Salt);
-
-        //        encryptedResult = Convert.ToBase64String(
-        //        KeyDerivation.Pbkdf2(
-        //                password: Password,
-        //                salt: byteSalt,
-        //                prf: KeyDerivationPrf.HMACSHA256,
-        //                iterationCount: 10000,
-        //                numBytesRequested: 16)
-        //                );
-
-        //        encryptedSalt = Convert.ToBase64String(byteSalt);
-
-        //        //7QinOd6EXaMJU + C9FYAPyw ==
-
-        //        if (foundCredenziali != null)
-        //        {
-        //            result = foundCredenziali.PasswordHash == encryptedResult;
-
-        //        }
-        //        result = true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw;
-        //    }
-
-        //    return result;
-        //}
+       
 
     }
 
