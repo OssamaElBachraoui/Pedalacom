@@ -38,7 +38,6 @@ namespace Pedalacom.BLogic.Encryption
                     result = customerFound.PasswordHash == encryptedResult;
 
                 }
-                result = true;
             }
             catch (Exception ex)
             {
