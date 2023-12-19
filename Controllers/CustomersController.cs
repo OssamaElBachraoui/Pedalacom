@@ -98,14 +98,16 @@ namespace Pedalacom.Controllers
             //password hash
             Encryption en=new Encryption();
             KeyValuePair<string, string> keyValuePair;
-            keyValuePair = en.EncrypSaltString("test");
+            keyValuePair = en.EncrypSaltString(customer.tmpPassword);
             customer.PasswordHash = keyValuePair.Key;
             customer.PasswordSalt = keyValuePair.Value;
+
 
             //rowguid
             Guid nuovoGuid = Guid.NewGuid();
             customer.Rowguid= nuovoGuid;
-            
+
+            customer.tmpPassword = "";
 
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
