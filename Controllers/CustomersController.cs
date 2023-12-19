@@ -95,6 +95,11 @@ namespace Pedalacom.Controllers
           {
               return Problem("Entity set 'AdventureWorksLt2019Context.Customers'  is null.");
           }
+
+            if (_context.Customers.Any(c => c.EmailAddress == customer.EmailAddress))
+            {
+                return BadRequest("Email address is already in use.");
+            }
             //password hash
             Encryption en=new Encryption();
             KeyValuePair<string, string> keyValuePair;
