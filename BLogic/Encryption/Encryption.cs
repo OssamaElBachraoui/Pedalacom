@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Pedalacom.Servizi.Log;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -6,41 +7,12 @@ namespace Pedalacom.Controllers
 {
     public class Encryption
     {
+        Log log;
         public string passM { get; }
         public Encryption()
         {
             
         }
-        //private string Encrypt(string s)
-        //{
-
-        //    string EnString = "";
-        //    try
-        //    {
-
-        //        SHA256 sha = SHA256.Create();
-
-        //        byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(s));
-
-        //        StringBuilder stringBuilder = new StringBuilder();
-
-        //        for (int i = 0; i < bytes.Length; i++)
-        //        {
-        //            stringBuilder.Append(bytes[i].ToString("X2"));//x2 codifica valore in esadeciamle maiuscolo
-
-        //        }
-
-        //        EnString = stringBuilder.ToString();
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw e;
-        //    }
-        //    return EnString;
-
-        //}
-
         public KeyValuePair<string, string> EncrypSaltString(string sValue)
         {
             byte[] byteSalt = new byte[5];
@@ -69,6 +41,8 @@ namespace Pedalacom.Controllers
             }
             catch (Exception ex)
             {
+                log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
+                log.WriteLog();
                 Console.WriteLine(ex.Message);
             }
 

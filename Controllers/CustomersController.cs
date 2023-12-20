@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pedalacom.BLogic.Authentication;
 using Pedalacom.Models;
-
+using Pedalacom.Servizi.Eccezioni;
+using Pedalacom.Servizi.Log;
 
 namespace Pedalacom.Controllers
 {
@@ -16,6 +17,7 @@ namespace Pedalacom.Controllers
     
     public class CustomersController : ControllerBase
     {
+        Log log;
         private readonly AdventureWorksLt2019Context _context;
 
         public CustomersController(AdventureWorksLt2019Context context)
@@ -27,31 +29,48 @@ namespace Pedalacom.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
-          if (_context.Customers == null)
-          {
-              return NotFound();
-          }
-            return await _context.Customers
-                .Include(emp => emp.CustomerAddresses)
-                .Include(emp => emp.SalesOrderHeaders)
-                .ToListAsync();   
+            try
+            {
+                if (_context.Customers == null)
+                {
+                    return NotFound();
+                    throw new NotFoundException("Cliente non trovato");
+                }
+                return await _context.Customers
+                    .Include(emp => emp.CustomerAddresses)
+                    .Include(emp => emp.SalesOrderHeaders)
+                    .ToListAsync();
+            }catch (Exception ex) {
+                log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
+                log.WriteLog();
+                return BadRequest(ex);
+            }
         }
 
         // GET: api/Customers/5
         [HttpGet("{email}")]
         public async Task<ActionResult<Customer>> GetCustomer(string email)
         {
-            var lastCustomer = await _context.Customers
-                .Where(c => c.EmailAddress == email)
-                .OrderByDescending(c => c.CustomerId)
-                .FirstOrDefaultAsync();
-
-            if (lastCustomer == null)
+            try
             {
-                return NotFound();
-            }
+                var lastCustomer = await _context.Customers
+                    .Where(c => c.EmailAddress == email)
+                    .OrderByDescending(c => c.CustomerId)
+                    .FirstOrDefaultAsync();
 
-            return lastCustomer;
+                if (lastCustomer == null)
+                {
+                    return NotFound();
+                    throw new NotFoundException("Prodotto non trovato");
+                }
+
+                return lastCustomer;
+            }
+            catch (Exception ex) {
+                log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
+                log.WriteLog();
+                return BadRequest(ex);
+            }
         }
 
         // PUT: api/Customers/5
@@ -59,6 +78,7 @@ namespace Pedalacom.Controllers
         [HttpPut("{email}")]
         public async Task<IActionResult> PutCustomer(string email, Customer customer)
         {
+             
             var lastCustomer = await _context.Customers
              .Where(c => c.EmailAddress == email)
              .OrderByDescending(c => c.CustomerId) 
@@ -92,10 +112,15 @@ namespace Pedalacom.Controllers
 
             try
             {
+                
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
+                log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
+                log.WriteLog();
+
+
                 if (!CustomerExists(lastCustomer.CustomerId))
                 {
                     return NotFound();
@@ -114,53 +139,74 @@ namespace Pedalacom.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
-          if (_context.Customers == null)
-          {
-              return Problem("Entity set 'AdventureWorksLt2019Context.Customers'  is null.");
-          }
-
-            if (_context.Customers.Any(c => c.EmailAddress == customer.EmailAddress))
+            try
             {
-                return BadRequest("Email address is already in use.");
+                if (_context.Customers == null)
+                {
+                    return Problem("Entity set 'AdventureWorksLt2019Context.Customers'  is null.");
+                    throw new Exception("Contesto database nullo");
+                }
+
+                if (_context.Customers.Any(c => c.EmailAddress == customer.EmailAddress))
+                {
+                    return BadRequest("Email address is already in use.");
+                  
+                }
+                //password hash
+                Encryption en = new Encryption();
+                KeyValuePair<string, string> keyValuePair;
+                keyValuePair = en.EncrypSaltString(customer.tmpPassword);
+                customer.PasswordHash = keyValuePair.Key;
+                customer.PasswordSalt = keyValuePair.Value;
+
+
+                //rowguid
+                Guid nuovoGuid = Guid.NewGuid();
+                customer.Rowguid = nuovoGuid;
+
+                customer.tmpPassword = "";
+
+                _context.Customers.Add(customer);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
+            }catch (Exception ex)
+            {
+                log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
+                log.WriteLog();
+                return BadRequest(ex);
+
             }
-            //password hash
-            Encryption en=new Encryption();
-            KeyValuePair<string, string> keyValuePair;
-            keyValuePair = en.EncrypSaltString(customer.tmpPassword);
-            customer.PasswordHash = keyValuePair.Key;
-            customer.PasswordSalt = keyValuePair.Value;
-
-
-            //rowguid
-            Guid nuovoGuid = Guid.NewGuid();
-            customer.Rowguid= nuovoGuid;
-
-            customer.tmpPassword = "";
-
-            _context.Customers.Add(customer);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
         }
 
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
-            if (_context.Customers == null)
+            try
             {
-                return NotFound();
-            }
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
+                if (_context.Customers == null)
+                {
+                    return NotFound();
+                    throw new NotFoundException("Contesto del cliente non trovato");
+                }
+                var customer = await _context.Customers.FindAsync(id);
+                if (customer == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Customers.Remove(customer);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }catch(Exception ex)
             {
-                return NotFound();
+                log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
+                log.WriteLog();
+                return BadRequest(ex);
+
             }
-
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
         private bool CustomerExists(int id)

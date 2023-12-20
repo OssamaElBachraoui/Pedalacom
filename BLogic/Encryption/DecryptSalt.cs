@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Pedalacom.Servizi.Log;
 
 namespace Pedalacom.BLogic.Encryption
 {
     public class DecryptSalt
     {
-
+        Log log;
         internal bool DecryptSaltCredential(Models.Customer customerFound, string password)
         {
             bool result = false;
@@ -41,6 +42,8 @@ namespace Pedalacom.BLogic.Encryption
             }
             catch (Exception ex)
             {
+                log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
+                log.WriteLog();
                 throw;
             }
 

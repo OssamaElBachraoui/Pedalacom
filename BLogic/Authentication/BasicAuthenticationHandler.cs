@@ -15,12 +15,15 @@ using System.Xml.Serialization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Pedalacom.BLogic.Encryption;
 using Pedalacom.Controllers;
+using Pedalacom.Servizi.Log;
 
 namespace Pedalacom.BLogic.Authentication
 {
     public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         private readonly AdventureWorksLt2019Context _context;
+
+        Log log;
 
         public BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
@@ -39,7 +42,9 @@ namespace Pedalacom.BLogic.Authentication
 
                 if (!Request.Headers.ContainsKey("Authorization"))
                 {
+                    
                     throw new InvalidOperationException("Autorizzazione mancante: Impossibile accedere al servizio");
+                    
                 }
 
                 var authorizationHeader = Request.Headers["Authorization"].ToString();
@@ -88,6 +93,8 @@ namespace Pedalacom.BLogic.Authentication
             }
             catch (Exception ex)
             {
+                log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
+                log.WriteLog();
                 return AuthenticateResult.Fail($"An error occurred: {ex.Message}");
                 // return Task.FromResult(AuthenticateResult.Fail($"An error occurred: {ex.Message}"));
             }

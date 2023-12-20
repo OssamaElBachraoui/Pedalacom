@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pedalacom.Models;
+using Pedalacom.Servizi.Log;
 
 namespace Pedalacom.Controllers
 {
@@ -10,6 +11,7 @@ namespace Pedalacom.Controllers
     {
 
         private readonly AdventureWorksLt2019Context _context;
+        Log log;
 
         public OldCustomersController(AdventureWorksLt2019Context context)
         {
@@ -19,18 +21,26 @@ namespace Pedalacom.Controllers
         [HttpGet("{email}")]
         public async Task<ActionResult<OldCustomer>> GetCustomer(string email)
         {
-            var lastCustomer = await _context.OldCustomers
-                .FromSqlRaw("select * from [dbo].[View_IsOld]")
-                .Where(c => c.EmailAddress == email)
-                .OrderByDescending(c => c.CustomerId)
-                .FirstOrDefaultAsync();
-
-            if (lastCustomer == null)
+            try
             {
-                return NotFound();
-            }
+                var lastCustomer = await _context.OldCustomers
+                    .FromSqlRaw("select * from [dbo].[View_IsOld]")
+                    .Where(c => c.EmailAddress == email)
+                    .OrderByDescending(c => c.CustomerId)
+                    .FirstOrDefaultAsync();
 
-            return lastCustomer;
+                if (lastCustomer == null)
+                {
+                    return NotFound();
+                }
+
+                return lastCustomer;
+            }catch (Exception ex)
+            {
+                log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
+                log.WriteLog();
+                return BadRequest(ex);
+            }
         }
 
 
