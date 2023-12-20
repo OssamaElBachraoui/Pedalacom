@@ -3,13 +3,15 @@
     public class Log
     {
         //metti il tuo path commentato assoluto come il mio
-        string path = "C:\\Users\\stefa\\Desktop\\Accademy Betacom\\Pedalacom\\Servizi\\Log\\log.txt";//Path stefan
+        /*string path = "C:\\Users\\stefa\\Desktop\\Accademy Betacom\\Pedalacom\\Servizi\\Log\\log.txt";*///Path stefan
+        string path = "C:\\Users\\ricca\\wa\\Pedalacom\\Pedalacom\\Servizi\\Log\\log.txt"; //path di Ric
         private string NameClass { get; set; }
         private string ErrorMessage { get; set; }
 
         private string ExType { get; set; }
         private string ErrorCode { get; set; }
         private DateTime date { get; set; }
+        
 
         public Log(string NameClass, string ErrorMessage, string ExType, string ErrorCode, DateTime date)
         {
@@ -26,7 +28,7 @@
         public void WriteLog()
         {
 
-            string err = "Nome Classe: " + NameClass + ", Errore Messaggio: " + ErrorMessage + ", Tipologia di Eccezione: " + ExType + ", Codice di errore: " + ErrorCode + ", Data: " + date.ToLongDateString() + "\n";
+            string err = "Nome Classe: " + NameClass + ", Errore Messaggio: " + ErrorMessage + ", Tipologia di Eccezione: " + ExType + ", Codice di errore: " + ErrorCode + ", Data: " + date.ToString("dddd, dd MMMM yyyy HH:mm:ss") + "\n";
             try
             {
 
