@@ -38,34 +38,57 @@ namespace Pedalacom.Controllers
         }
 
         // GET: api/Customers/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        [HttpGet("{email}")]
+        public async Task<ActionResult<Customer>> GetCustomer(string email)
         {
-          if (_context.Customers == null)
-          {
-              return NotFound();
-          }
-            var customer = await _context.Customers.FindAsync(id);
+            var lastCustomer = await _context.Customers
+                .Where(c => c.EmailAddress == email)
+                .OrderByDescending(c => c.CustomerId)
+                .FirstOrDefaultAsync();
 
-            if (customer == null)
+            if (lastCustomer == null)
             {
                 return NotFound();
             }
 
-            return customer;
+            return lastCustomer;
         }
 
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(int id, Customer customer)
+        [HttpPut("{email}")]
+        public async Task<IActionResult> PutCustomer(string email, Customer customer)
         {
-            if (id != customer.CustomerId)
+            var lastCustomer = await _context.Customers
+             .Where(c => c.EmailAddress == email)
+             .OrderByDescending(c => c.CustomerId) 
+             .FirstOrDefaultAsync();
+
+            if (lastCustomer == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(customer).State = EntityState.Modified;
+            Encryption en = new Encryption();
+            KeyValuePair<string, string> keyValuePair;
+            keyValuePair = en.EncrypSaltString(customer.tmpPassword);
+            customer.PasswordHash = keyValuePair.Key;
+            customer.PasswordSalt = keyValuePair.Value;
+            customer.tmpPassword = "";
+
+
+            lastCustomer.FirstName = customer.FirstName;
+            lastCustomer.LastName = customer.LastName;
+            lastCustomer.Phone = customer.Phone;
+            lastCustomer.PasswordHash = customer.PasswordHash;
+            lastCustomer.PasswordSalt = customer.PasswordSalt;
+            lastCustomer.tmpPassword = customer.tmpPassword;
+            lastCustomer.IsOld = 0;
+            
+            
+
+
+            _context.Entry(lastCustomer).State = EntityState.Modified;
 
             try
             {
@@ -73,7 +96,7 @@ namespace Pedalacom.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(id))
+                if (!CustomerExists(lastCustomer.CustomerId))
                 {
                     return NotFound();
                 }

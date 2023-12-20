@@ -8,6 +8,7 @@ namespace Pedalacom.Controllers
    
     public class LoginController : ControllerBase
     {
+
         [HttpPost]
         public IActionResult Auth(User user) {
 

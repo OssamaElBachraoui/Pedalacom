@@ -32,6 +32,7 @@ namespace Pedalacom.BLogic.Authentication
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
+
             try
             {
                 Response.Headers.Add("WWW-Authenticate", "Basic");

@@ -115,8 +115,8 @@ public partial class Customer
     /// </summary>
     /// 
     
-    public string tmpPassword { get; set; }
-        
+    public string? tmpPassword { get; set; } = null!;
+
     public DateTime ModifiedDate { get; set; }
 
     public int? IsOld { get; set; }
