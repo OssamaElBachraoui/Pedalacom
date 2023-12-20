@@ -64,7 +64,7 @@ public partial class Customer
     /// The customer&apos;s organization.
     /// </summary>
     
-    [MinLength(2, ErrorMessage = "La azienda non può avere meno di 2 caratteri")]
+    
     [MaxLength(50, ErrorMessage = "La azienda non può avere più di 50 caratteri")]
     public string? CompanyName { get; set; }
 
