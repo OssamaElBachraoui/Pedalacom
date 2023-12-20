@@ -137,7 +137,7 @@ namespace Pedalacom.Controllers
         // POST: api/Customers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<IActionResult> PostCustomer(Customer customer)
         {
             try
             {
@@ -169,8 +169,10 @@ namespace Pedalacom.Controllers
                 _context.Customers.Add(customer);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
-            }catch (Exception ex)
+                //return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
+                return NoContent();
+            }
+            catch (Exception ex)
             {
                 log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
                 log.WriteLog();
