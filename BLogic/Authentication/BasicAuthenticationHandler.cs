@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Pedalacom.BLogic.Encryption;
 using Pedalacom.Controllers;
 using Pedalacom.Servizi.Log;
+using Microsoft.Identity.Client;
 
 namespace Pedalacom.BLogic.Authentication
 {
@@ -33,6 +34,8 @@ namespace Pedalacom.BLogic.Authentication
             _context = context;
         }
 
+
+        private AuthenticateResult authenticationResult;
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
 
@@ -81,19 +84,19 @@ namespace Pedalacom.BLogic.Authentication
                 var authenticationUser = new AuthenticationUser(username, "BasicAuthentication", true);
                 var claims = new ClaimsPrincipal(new ClaimsIdentity(authenticationUser));
 
-                return AuthenticateResult.Success(new AuthenticationTicket(claims, "BasicAuthentication"));
+                authenticationResult = AuthenticateResult.Success(new AuthenticationTicket(claims, "BasicAuthentication"));
+                return authenticationResult;
+                //return AuthenticateResult.Success(new AuthenticationTicket(claims, "BasicAuthentication"));
             }
             catch (Exception ex)
             {
                 log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
                 log.WriteLog();
-                return AuthenticateResult.Fail($"An error occurred: {ex.Message}");
+                authenticationResult = AuthenticateResult.Fail($"An error occurred: {ex.Message}");
+                return authenticationResult;
+                //return AuthenticateResult.Fail($"An error occurred: {ex.Message}");
 
             }
-        }
-        public async Task<AuthenticateResult> AuthenticateUserAsync(HttpContext context)
-        {
-            return await HandleAuthenticateOnceAsync();
         }
     }
 }

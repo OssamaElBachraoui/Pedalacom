@@ -1,48 +1,43 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Pedalacom.BLogic.Authentication;
 
 namespace Pedalacom.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class LoginController : ControllerBase
+    public class LoginController : Controller
     {
-        private readonly BasicAuthenticationHandler _authenticationHandler;
+        private readonly IAuthenticationService _authenticationService;
 
-        public LoginController(BasicAuthenticationHandler authenticationHandler)
+        public LoginController(IAuthenticationService authenticationService)
         {
-            _authenticationHandler = authenticationHandler;
+            _authenticationService = authenticationService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Auth(User user)
+        [HttpPost("/login")]
+        public IActionResult Login(User user)
         {
-            try
+            var result = _authenticationService.AuthenticateAsync(HttpContext, "BasicAuthentication").Result;
+
+            if (result.Succeeded)
             {
-              
-
-                var authenticateResult = await _authenticationHandler.AuthenticateUserAsync(HttpContext);
-
-                if (authenticateResult.Succeeded)
-                {
-                    
-                    return Ok();
-                }
-                else
-                {
-                    
-                    return BadRequest();
-                }
+                // Authentication succeeded
+                // Add your logic here for a successful login
+                return Ok(user);
             }
-            catch (Exception ex)
+            else
             {
-               
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                // Authentication failed
+                // Add your logic here for a failed login
+                return BadRequest("Login failed");
             }
         }
     }
 
-    
+
+
+
     public class User
     {
         public string username { get; set; }
