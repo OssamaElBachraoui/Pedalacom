@@ -11,5 +11,6 @@ namespace Pedalacom.Models
         public string? EmailAddress { get; set; }
 
         public int? IsOld { get; set; }
+        public Guid Rowguid { get; set; }
     }
 }
