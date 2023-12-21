@@ -71,21 +71,13 @@ namespace Pedalacom.BLogic.Authentication
 
                 // Verifica nel database
                 var user = await _context.Customers.FirstOrDefaultAsync(c => c.EmailAddress.ToLower() == username.ToLower());
-
-                if (user != null && user.IsOld == 1)
-                {
-                    throw new InvalidOperationException("Autorizzazione non valida : Registrarsi nuovamente");
-
-                }
-                else {
+                
                     DecryptSalt decryptSalt = new();
 
                     if (user == null || !decryptSalt.DecryptSaltCredential(user, password))
                     {
                         throw new InvalidOperationException("Autorizzazione non valida : Impossibile accedere al servizio");
                     }
-
-                }
                 var authenticationUser = new AuthenticationUser(username, "BasicAuthentication", true);
                 var claims = new ClaimsPrincipal(new ClaimsIdentity(authenticationUser));
 
@@ -96,17 +88,12 @@ namespace Pedalacom.BLogic.Authentication
                 log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
                 log.WriteLog();
                 return AuthenticateResult.Fail($"An error occurred: {ex.Message}");
-                // return Task.FromResult(AuthenticateResult.Fail($"An error occurred: {ex.Message}"));
+
             }
         }
-
-
-       
-
-        
-
-       
-
+        public async Task<AuthenticateResult> AuthenticateUserAsync(HttpContext context)
+        {
+            return await HandleAuthenticateOnceAsync();
+        }
     }
-
 }
