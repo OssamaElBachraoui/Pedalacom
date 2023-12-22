@@ -1,68 +1,50 @@
-﻿namespace Pedalacom.Servizi.Log
+﻿using System.Configuration;
+using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
+using Newtonsoft.Json;
+
+namespace Pedalacom.Servizi.Log
 {
     public class Log
     {
-        //metti il tuo path commentato assoluto come il mio
-        /*string path = "C:\\Users\\stefa\\Desktop\\Accademy Betacom\\Pedalacom\\Servizi\\Log\\log.txt";*///Path stefan
-        string path = "C:\\Users\\ricca\\wa\\Pedalacom\\Pedalacom\\Servizi\\Log\\log.txt"; //path di Ric
         private string NameClass { get; set; }
         private string ErrorMessage { get; set; }
-
         private string ExType { get; set; }
         private string ErrorCode { get; set; }
-        private DateTime date { get; set; }
-        
+        private DateTime Date { get; set; }
 
         public Log(string NameClass, string ErrorMessage, string ExType, string ErrorCode, DateTime date)
         {
-
             this.NameClass = NameClass;
             this.ErrorMessage = ErrorMessage;
             this.ExType = ExType;
             this.ErrorCode = ErrorCode;
-            this.date = date;
-
-
+            Date = date;
         }
 
         public void WriteLog()
         {
-
-            string err = "Nome Classe: " + NameClass + ", Errore Messaggio: " + ErrorMessage + ", Tipologia di Eccezione: " + ExType + ", Codice di errore: " + ErrorCode + ", Data: " + date.ToString("dddd, dd MMMM yyyy HH:mm:ss") + "\n";
             try
             {
-
-                File.AppendAllText(path, err);
-
+                using (SqlConnection connection = new SqlConnection(System.Configuration.ConfigurationManager.AppSettings["ConnectionStrings"]))
+                {
+                    connection.Open();
+                    string query = "insert into Errori values(@NomeClasse, @ErroreMessaggio, @TipologiaEccezione, @CodiceErrore, @Data)";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("NomeClasse", NameClass);
+                        command.Parameters.AddWithValue("ErroreMessaggio", ErrorMessage);
+                        command.Parameters.AddWithValue("TipologiaEccezione", ExType);
+                        command.Parameters.AddWithValue("CodiceErrore", ErrorCode);
+                        command.Parameters.AddWithValue("Data", Date);
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-
-                Console.WriteLine(e.StackTrace);
-
-            }
-
-
-
-
-        }
-
-        public void WriteLog(string msg)
-        {
-            try
-            {
-
-                File.AppendAllText(path, msg);
-
-            }
-            catch (Exception e)
-            {
-
-                Console.WriteLine(e.StackTrace);
-
+                throw ex;
             }
         }
-
-
     }
 }

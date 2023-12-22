@@ -1,2 +1,0 @@
-Nome Classe: Pedalacom.Program, Errore Messaggio: Autorizzazione mancante: Impossibile accedere al servizio, Tipologia di Eccezione: System.InvalidOperationException, Codice di errore: -2146233079, Data: mercoledì 20 dicembre 2023
-Nome Classe: Pedalacom.Program, Errore Messaggio: Autorizzazione mancante: Impossibile accedere al servizio, Tipologia di Eccezione: System.InvalidOperationException, Codice di errore: -2146233079, Data: mercoledì 20 dicembre 2023
