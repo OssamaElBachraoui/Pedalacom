@@ -1,7 +1,7 @@
-﻿using System.Configuration;
+﻿using System;
 using System.Data.SqlClient;
 using Microsoft.Data.SqlClient;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace Pedalacom.Servizi.Log
 {
@@ -26,7 +26,13 @@ namespace Pedalacom.Servizi.Log
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(System.Configuration.ConfigurationManager.AppSettings["ConnectionStrings"]))
+                var configuration = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json") // Specify the appsettings.json file
+                    .Build();
+
+                string connectionString = configuration.GetConnectionString("AdventureDB");
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
                     string query = "insert into Errori values(@NomeClasse, @ErroreMessaggio, @TipologiaEccezione, @CodiceErrore, @Data)";
