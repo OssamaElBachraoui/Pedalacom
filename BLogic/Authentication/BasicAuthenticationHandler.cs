@@ -73,9 +73,13 @@ namespace Pedalacom.BLogic.Authentication
 
 
                 // Verifica nel database
-                var user = await _context.Customers.FirstOrDefaultAsync(c => c.EmailAddress.ToLower() == username.ToLower());
-                
-                    DecryptSalt decryptSalt = new();
+                var user = await _context.Customers
+                 .Where(c => c.EmailAddress.ToLower() == username.ToLower())
+                 .OrderByDescending(c => c.EmailAddress)
+                 .FirstOrDefaultAsync();
+
+
+                DecryptSalt decryptSalt = new();
 
                     if (user == null || !decryptSalt.DecryptSaltCredential(user, password))
                     {
