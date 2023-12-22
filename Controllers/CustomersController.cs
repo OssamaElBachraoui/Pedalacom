@@ -97,9 +97,6 @@ namespace Pedalacom.Controllers
             customer.tmpPassword = "";
 
 
-            lastCustomer.FirstName = customer.FirstName;
-            lastCustomer.LastName = customer.LastName;
-            lastCustomer.Phone = customer.Phone;
             lastCustomer.PasswordHash = customer.PasswordHash;
             lastCustomer.PasswordSalt = customer.PasswordSalt;
             lastCustomer.tmpPassword = customer.tmpPassword;
