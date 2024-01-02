@@ -89,12 +89,15 @@ namespace Pedalacom.Controllers
                 return NotFound();
             }
 
+            if(customer.tmpPassword != null)
+            {
             Encryption en = new Encryption();
             KeyValuePair<string, string> keyValuePair;
             keyValuePair = en.EncrypSaltString(customer.tmpPassword);
             customer.PasswordHash = keyValuePair.Key;
             customer.PasswordSalt = keyValuePair.Value;
             customer.tmpPassword = "";
+            }
 
             lastCustomer.FirstName = customer.FirstName;
             lastCustomer.LastName = customer.LastName;
@@ -103,6 +106,8 @@ namespace Pedalacom.Controllers
             lastCustomer.PasswordSalt = customer.PasswordSalt;
             lastCustomer.tmpPassword = customer.tmpPassword;
             lastCustomer.IsOld = 0;
+            
+
             
             
 
