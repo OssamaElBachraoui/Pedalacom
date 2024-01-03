@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Pedalacom.Models;
 using Pedalacom.Servizi.Eccezioni;
 using Pedalacom.Servizi.Log;
@@ -20,27 +21,27 @@ namespace Pedalacom.Controllers
 
 
             [HttpGet("{id}")]
-            public async Task<ActionResult<List<PreviewProduct>>> GetProductsFromCategory(int id)
+            public async Task<ActionResult<List<CustomerOrder>>> GetOrders(int id)
             {
                 try
                 {
-                    if (_context.PreviewProducts == null)
+                    if (_context.CustomerOrders == null)
                     {
                         return NotFound();
                         throw new NotFoundException("Contesto del prodotto non trovato");
                     }
 
-                    var products = await _context.PreviewProducts
-                        .FromSqlRaw("select cat.ProductCategoryID, prod.ProductID, prod.Name as product,\r\n\t   prod.ListPrice \t\r\nfrom SalesLT.ProductCategory as cat\r\njoin SalesLT.Product as prod on cat.ProductCategoryID = prod.ProductCategoryID")
-                        .Where(pre => pre.ProductCategoryID == id)
+                    var orders = await _context.CustomerOrders
+                        .FromSqlRaw("SELECT * FROM [dbo].[View_Orders]")
+                        .Where(pre => pre.CustomerId == id)
                         .ToListAsync();
 
-                    if (products == null || !products.Any())
+                    if (orders == null || !orders.Any())
                     {
                         return NotFound();
                     }
 
-                    return Ok(products);
+                    return Ok(orders);
                 }
                 catch (Exception ex)
                 {
