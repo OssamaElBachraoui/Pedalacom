@@ -56,6 +56,7 @@ namespace Pedalacom.Controllers
                 var lastCustomer = await _context.Customers
                     .Where(c => c.EmailAddress == email)
                     .OrderByDescending(c => c.CustomerId)
+                    .Include(ad => ad.CustomerAddresses)
                     .FirstOrDefaultAsync();
 
                 if (lastCustomer == null)
