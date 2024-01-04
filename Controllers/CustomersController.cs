@@ -97,7 +97,7 @@ namespace Pedalacom.Controllers
             keyValuePair = en.EncrypSaltString(customer.tmpPassword);
             customer.PasswordHash = keyValuePair.Key;
             customer.PasswordSalt = keyValuePair.Value;
-            customer.tmpPassword = "";
+            customer.tmpPassword = null;
             }
 
             lastCustomer.FirstName = customer.FirstName;
