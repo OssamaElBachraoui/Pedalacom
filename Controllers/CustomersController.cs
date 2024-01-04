@@ -57,6 +57,7 @@ namespace Pedalacom.Controllers
                     .Where(c => c.EmailAddress == email)
                     .OrderByDescending(c => c.CustomerId)
                     .Include(ad => ad.CustomerAddresses)
+                    .Include(or => or.SalesOrderHeaders)
                     .FirstOrDefaultAsync();
 
                 if (lastCustomer == null)
