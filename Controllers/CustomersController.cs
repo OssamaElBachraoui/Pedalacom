@@ -170,6 +170,7 @@ namespace Pedalacom.Controllers
                 Guid nuovoGuid = Guid.NewGuid();
                 customer.Rowguid = nuovoGuid;
 
+                
                 customer.tmpPassword = "";
 
                 _context.Customers.Add(customer);
