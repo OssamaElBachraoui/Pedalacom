@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Pedalacom.BLogic.Authentication;
 using Pedalacom.Models;
 
 namespace Pedalacom.Controllers
@@ -21,6 +22,7 @@ namespace Pedalacom.Controllers
         }
 
         // GET: api/Products
+        [BasicAutorizationAttributes]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
@@ -55,6 +57,7 @@ namespace Pedalacom.Controllers
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [BasicAutorizationAttributes]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
@@ -86,6 +89,7 @@ namespace Pedalacom.Controllers
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [BasicAutorizationAttributes]
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
@@ -100,6 +104,7 @@ namespace Pedalacom.Controllers
         }
 
         // DELETE: api/Products/5
+        [BasicAutorizationAttributes]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {

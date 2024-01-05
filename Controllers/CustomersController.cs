@@ -171,7 +171,7 @@ namespace Pedalacom.Controllers
                 customer.Rowguid = nuovoGuid;
 
                 
-                customer.tmpPassword = "";
+                customer.tmpPassword = null;
 
                 _context.Customers.Add(customer);
                 await _context.SaveChangesAsync();
