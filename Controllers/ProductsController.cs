@@ -119,6 +119,12 @@ namespace Pedalacom.Controllers
           {
               return Problem("Entity set 'AdventureWorksLt2019Context.Products'  is null.");
           }
+            //rowguid
+
+
+            Guid nuovoGuid = Guid.NewGuid();
+            product.Rowguid = nuovoGuid;
+
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
