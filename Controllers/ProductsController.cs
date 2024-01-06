@@ -22,7 +22,7 @@ namespace Pedalacom.Controllers
         }
 
         // GET: api/Products
-        [BasicAutorizationAttributes]
+      
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
@@ -61,12 +61,19 @@ namespace Pedalacom.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
-            if (id != product.ProductId)
-            {
-                return BadRequest();
-            }
 
-            _context.Entry(product).State = EntityState.Modified;
+             var foundProduct = await _context.Products
+            .Where(p => p.ProductId == id)
+            .FirstOrDefaultAsync();
+
+
+            if (foundProduct == null)
+            {
+                return NotFound();
+            }
+          
+
+            _context.Entry(foundProduct).State = EntityState.Modified;
 
             try
             {
