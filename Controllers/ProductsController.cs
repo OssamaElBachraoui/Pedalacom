@@ -71,6 +71,21 @@ namespace Pedalacom.Controllers
             {
                 return NotFound();
             }
+
+            foundProduct.Name = product.Name;
+            foundProduct.ProductNumber = product.ProductNumber;
+            foundProduct.Color = product.Color;
+            foundProduct.StandardCost = product.StandardCost;
+            foundProduct.ListPrice = product.ListPrice;
+            foundProduct.Size = product.Size;
+            foundProduct.Weight = product.Weight;
+            foundProduct.ProductCategoryId = product.ProductCategoryId;
+            foundProduct.ProductModelId = product.ProductModelId;
+            foundProduct.SellStartDate = product.SellStartDate;
+            foundProduct.SellEndDate = product.SellEndDate;
+            foundProduct.DiscontinuedDate = product.DiscontinuedDate;
+            foundProduct.ThumbNailPhoto = product.ThumbNailPhoto;
+            foundProduct.ThumbnailPhotoFileName = product.ThumbnailPhotoFileName;
           
 
             _context.Entry(foundProduct).State = EntityState.Modified;
