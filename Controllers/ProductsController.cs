@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pedalacom.BLogic.Authentication;
+using Pedalacom.BLogic.ProductNumberGenerator;
 using Pedalacom.Models;
 
 namespace Pedalacom.Controllers
@@ -115,21 +116,29 @@ namespace Pedalacom.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
+
+
           if (_context.Products == null)
           {
               return Problem("Entity set 'AdventureWorksLt2019Context.Products'  is null.");
           }
             //rowguid
-
+            
 
             Guid nuovoGuid = Guid.NewGuid();
             product.Rowguid = nuovoGuid;
+
+            ProductNumber productNumber = new ProductNumber();
+
+            string randomProductNumber = productNumber.GenerateRandomProductNumber();
+            product.ProductNumber = randomProductNumber;
 
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetProduct", new { id = product.ProductId }, product);
         }
+
 
         // DELETE: api/Products/5
         [BasicAutorizationAttributes]
