@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Pedalacom.Models;
 
 namespace Pedalacom.Models;
 
@@ -650,4 +651,8 @@ public partial class AdventureWorksLt2019Context : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    public DbSet<Pedalacom.Models.CategoryChild> CategoryChild { get; set; } = default!;
+
+    public DbSet<Pedalacom.Models.Model> Model { get; set; } = default!;
 }
