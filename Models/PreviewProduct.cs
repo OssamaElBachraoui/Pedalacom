@@ -9,13 +9,6 @@ namespace Pedalacom.Models
         public string Product { get; set; }
         public int ProductCategoryID { get; set; }
         public decimal ListPrice { get; set; }
-        public byte[]? ThumbNailPhoto { get; set; }
 
-        public string? ThumbnailPhotoFileName { get; set; }
-     
-
-
-
-       
     }
 }
