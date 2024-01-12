@@ -30,7 +30,7 @@ namespace Pedalacom.Controllers
                 }
 
                 var products = await _context.PreviewProducts
-                    .FromSqlRaw("select cat.ProductCategoryID, prod.ProductID, prod.Name as product,\r\n\t   prod.ListPrice \t\r\nfrom SalesLT.ProductCategory as cat\r\njoin SalesLT.Product as prod on cat.ProductCategoryID = prod.ProductCategoryID")
+                    .FromSqlRaw("select cat.ProductCategoryID, prod.ProductID, prod.Name as product, prod.ThumbNailPhoto, prod.ThumbnailPhotoFileName , prod.ListPrice from SalesLT.ProductCategory as cat join SalesLT.Product as prod on cat.ProductCategoryID = prod.ProductCategoryID")
                     .Where(pre => pre.ProductCategoryID == id)
                     .ToListAsync();
 
