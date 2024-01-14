@@ -10,5 +10,13 @@ namespace Pedalacom.Models
         public string EmailAddress { get; set; }
 
         public int ProductID { get; set; }
+
+        public string Name { get; set; } = null!;
+        public decimal ListPrice { get; set; }
+
+        public byte[]? ThumbNailPhoto { get; set; }
+
+        public string? ThumbnailPhotoFileName { get; set; }
+
     }
 }
