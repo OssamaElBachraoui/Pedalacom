@@ -40,7 +40,9 @@ namespace Pedalacom.Controllers
                     .Include(emp => emp.CustomerAddresses)
                     .Include(emp => emp.SalesOrderHeaders)
                     .ToListAsync();
-            }catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
                 log.WriteLog();
                 return BadRequest(ex);
@@ -68,7 +70,8 @@ namespace Pedalacom.Controllers
 
                 return lastCustomer;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
                 log.WriteLog();
                 return BadRequest(ex);
@@ -80,10 +83,10 @@ namespace Pedalacom.Controllers
         [HttpPut("{email}")]
         public async Task<IActionResult> PutCustomer(string email, Customer customer)
         {
-             
+
             var lastCustomer = await _context.Customers
              .Where(c => c.EmailAddress == email)
-             .OrderByDescending(c => c.CustomerId) 
+             .OrderByDescending(c => c.CustomerId)
              .FirstOrDefaultAsync();
 
             if (lastCustomer == null)
@@ -91,14 +94,14 @@ namespace Pedalacom.Controllers
                 return NotFound();
             }
 
-            if(customer.tmpPassword != null)
+            if (customer.tmpPassword != null)
             {
-            Encryption en = new Encryption();
-            KeyValuePair<string, string> keyValuePair;
-            keyValuePair = en.EncrypSaltString(customer.tmpPassword);
-            customer.PasswordHash = keyValuePair.Key;
-            customer.PasswordSalt = keyValuePair.Value;
-            customer.tmpPassword = null;
+                Encryption en = new Encryption();
+                KeyValuePair<string, string> keyValuePair;
+                keyValuePair = en.EncrypSaltString(customer.tmpPassword);
+                customer.PasswordHash = keyValuePair.Key;
+                customer.PasswordSalt = keyValuePair.Value;
+                customer.tmpPassword = null;
             }
 
             lastCustomer.FirstName = customer.FirstName;
@@ -108,17 +111,12 @@ namespace Pedalacom.Controllers
             lastCustomer.PasswordSalt = customer.PasswordSalt;
             lastCustomer.tmpPassword = customer.tmpPassword;
             lastCustomer.IsOld = 0;
-            
-
-            
-            
-
 
             _context.Entry(lastCustomer).State = EntityState.Modified;
 
             try
             {
-                
+
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -189,6 +187,7 @@ namespace Pedalacom.Controllers
         }
 
         // DELETE: api/Customers/5
+        [BasicAutorizationAttributes]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
