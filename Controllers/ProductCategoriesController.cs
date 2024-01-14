@@ -20,6 +20,7 @@ namespace Pedalacom.Controllers
             _context = context;
         }
 
+
         // GET: api/ProductCategories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductCategory>>> GetProductCategories()
