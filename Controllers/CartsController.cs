@@ -42,8 +42,8 @@ namespace Pedalacom.Controllers
         }
 
         // GET: api/Carts/5
-        [HttpGet("{customerId}")]
-        public async Task<ActionResult<IEnumerable<Cart>>> GetCart(int customerId)
+        [HttpGet("{email}")]
+        public async Task<ActionResult<IEnumerable<Cart>>> GetCart(string email)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace Pedalacom.Controllers
                 }
 
                 var carts = await _context.Cart
-                    .Where(c => c.CustomerID == customerId)
+                    .Where(c => c.EmailAddress == email)
                     .ToListAsync();
 
                 if (carts == null || !carts.Any())

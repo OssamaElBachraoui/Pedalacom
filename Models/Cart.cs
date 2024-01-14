@@ -7,7 +7,7 @@ namespace Pedalacom.Models
         [Key]
         public int CartID { get; set; }
 
-        public int CustomerID { get; set; }
+        public string EmailAddress { get; set; }
 
         public int ProductID { get; set; }
     }
