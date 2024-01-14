@@ -17,6 +17,19 @@ namespace Pedalacom.Controllers
             _context = context;
         }
 
+        // GET: PreviewProducts
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PreviewProduct>>> GetPreviewProducts()
+        {
+            if (_context.PreviewProducts == null)
+            {
+                return NotFound();
+            }
+            return await _context.PreviewProducts
+                .FromSqlRaw("select cat.ProductCategoryID, prod.ProductID, prod.Name as product , prod.ListPrice from SalesLT.ProductCategory as cat join SalesLT.Product as prod on cat.ProductCategoryID = prod.ProductCategoryID")
+                .ToListAsync();
+        }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<List<PreviewProduct>>> GetProductsFromCategory(int id)
