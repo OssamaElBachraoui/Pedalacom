@@ -22,14 +22,10 @@ namespace Pedalacom.Controllers
 
             if (result.Succeeded)
             {
-                // Authentication succeeded
-                // Add your logic here for a successful login
                 return Ok(user);
             }
             else
             {
-                // Authentication failed
-                // Add your logic here for a failed login
                 return BadRequest("Login failed");
             }
         }

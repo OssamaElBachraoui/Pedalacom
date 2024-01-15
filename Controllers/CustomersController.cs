@@ -65,7 +65,7 @@ namespace Pedalacom.Controllers
                 if (lastCustomer == null)
                 {
                     return NotFound();
-                    throw new NotFoundException("Prodotto non trovato");
+                    throw new NotFoundException("Utente non disponibile by Email");
                 }
 
                 return lastCustomer;
@@ -153,7 +153,7 @@ namespace Pedalacom.Controllers
 
                 if (_context.Customers.Any(c => c.EmailAddress == customer.EmailAddress))
                 {
-                    return BadRequest("Email address is already in use.");
+                    return BadRequest("Email Gia in utilizzo");
                   
                 }
                 //password hash
@@ -196,7 +196,7 @@ namespace Pedalacom.Controllers
                 if (_context.Customers == null)
                 {
                     return NotFound();
-                    throw new NotFoundException("Contesto del cliente non trovato");
+                    throw new NotFoundException("Cliente non trovato");
                 }
                 var customer = await _context.Customers.FindAsync(id);
                 if (customer == null)

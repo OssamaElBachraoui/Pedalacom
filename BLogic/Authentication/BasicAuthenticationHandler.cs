@@ -46,7 +46,7 @@ namespace Pedalacom.BLogic.Authentication
                 if (!Request.Headers.ContainsKey("Authorization"))
                 {
                     
-                    throw new InvalidOperationException("Autorizzazione mancante: Impossibile accedere al servizio");
+                    throw new InvalidOperationException("Autorizzazione mancante: Procedere con l'autenticazione");
                     
                 }
 
@@ -56,7 +56,7 @@ namespace Pedalacom.BLogic.Authentication
 
                 if (!authorizationRegEx.IsMatch(authorizationHeader))
                 {
-                    throw new InvalidOperationException("Autorizzazione non valida : Impossibile accedere al servizio");
+                    throw new InvalidOperationException("Autorizzazione non valida : tipologia autorizazione non valida");
                 }
 
                 var authorizationBase64 = Encoding.UTF8.GetString(Convert.FromBase64String(authorizationRegEx.Replace(authorizationHeader, "$1")));
@@ -65,7 +65,7 @@ namespace Pedalacom.BLogic.Authentication
 
                 if (authorizationSplit.Length != 2)
                 {
-                    throw new InvalidOperationException("Autorizzazione non valida : Impossibile accedere al servizio");
+                    throw new InvalidOperationException("Autorizzazione non valida : credenziali non complete");
                 }
 
                 var username = authorizationSplit[0];
@@ -83,22 +83,20 @@ namespace Pedalacom.BLogic.Authentication
 
                     if (user == null || !decryptSalt.DecryptSaltCredential(user, password))
                     {
-                        throw new InvalidOperationException("Autorizzazione non valida : Impossibile accedere al servizio");
+                        throw new InvalidOperationException("Autorizzazione non valida : utente non registrato");
                     }
                 var authenticationUser = new AuthenticationUser(username, "BasicAuthentication", true);
                 var claims = new ClaimsPrincipal(new ClaimsIdentity(authenticationUser));
 
                 authenticationResult = AuthenticateResult.Success(new AuthenticationTicket(claims, "BasicAuthentication"));
-                return authenticationResult;
-                //return AuthenticateResult.Success(new AuthenticationTicket(claims, "BasicAuthentication"));
+                return authenticationResult;              
             }
             catch (Exception ex)
             {
                 log = new Log(typeof(Program).ToString(), ex.Message, ex.GetType().ToString(), ex.HResult.ToString(), DateTime.Now);
                 log.WriteLog();
-                authenticationResult = AuthenticateResult.Fail($"An error occurred: {ex.Message}");
+                authenticationResult = AuthenticateResult.Fail($"Errore : {ex.Message}");
                 return authenticationResult;
-                //return AuthenticateResult.Fail($"An error occurred: {ex.Message}");
 
             }
         }

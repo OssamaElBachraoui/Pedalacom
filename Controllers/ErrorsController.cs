@@ -24,11 +24,15 @@ namespace Pedalacom.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Errori>>> GetError()
         {
-          if (_context.Errori == null)
+            var erroriQuery = _context.Errori.OrderByDescending(e => e.DataErrore);
+
+            var ultimiErrori = await erroriQuery.Take(100).ToListAsync();
+
+            if (_context.Errori == null)
           {
               return NotFound();
           }
-            return await _context.Errori.ToListAsync();
+            return ultimiErrori;
         }
 
         // GET: api/Errors/5

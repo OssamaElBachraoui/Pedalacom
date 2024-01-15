@@ -84,7 +84,7 @@ namespace Pedalacom.Controllers
 
                 if (_context.Cart == null)
                 {
-                    return Problem("Entity set 'AdventureWorksLt2019Context.Cart'  is null.");
+                    return Problem("Entity set 'AdventureWorksLt2019Context.Cart'  is null. Post non funzionante");
                 }
                 _context.Cart.Add(cart);
                 await _context.SaveChangesAsync();
