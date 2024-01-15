@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Pedalacom.BLogic.Authentication;
 using Pedalacom.Models;
 
 namespace Pedalacom.Controllers
@@ -21,6 +22,7 @@ namespace Pedalacom.Controllers
         }
 
         // GET: api/Errors
+        [BasicAutorizationAttributes]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Errori>>> GetError()
         {
@@ -35,89 +37,6 @@ namespace Pedalacom.Controllers
             return ultimiErrori;
         }
 
-        // GET: api/Errors/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Errori>> GetError(int id)
-        {
-          if (_context.Errori == null)
-          {
-              return NotFound();
-          }
-            var error = await _context.Errori.FindAsync(id);
-
-            if (error == null)
-            {
-                return NotFound();
-            }
-
-            return error;
-        }
-
-        // PUT: api/Errors/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutError(int id, Errori error)
-        {
-            if (id != error.IdErrore)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(error).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ErrorExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Errors
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Errori>> PostError(Errori error)
-        {
-          if (_context.Errori == null)
-          {
-              return Problem("Entity set 'AdventureWorksLt2019Context.Error'  is null.");
-          }
-            _context.Errori.Add(error);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetError", new { id = error.IdErrore }, error);
-        }
-
-        // DELETE: api/Errors/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteError(int id)
-        {
-            if (_context.Errori == null)
-            {
-                return NotFound();
-            }
-            var error = await _context.Errori.FindAsync(id);
-            if (error == null)
-            {
-                return NotFound();
-            }
-
-            _context.Errori.Remove(error);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
 
         private bool ErrorExists(int id)
         {
