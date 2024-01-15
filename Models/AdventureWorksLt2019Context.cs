@@ -658,4 +658,6 @@ public partial class AdventureWorksLt2019Context : DbContext
     public DbSet<Pedalacom.Models.Model> Model { get; set; } = default!;
 
     public DbSet<Pedalacom.Models.Cart> Cart { get; set; } = default!;
+
+    public DbSet<Pedalacom.Models.Errori> Errori { get; set; } = default!;
 }
